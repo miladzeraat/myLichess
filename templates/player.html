@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Information</title>
+</head>
+<body>
+    <h1>Player Information</h1>
+    {% if player_info %}
+        <p><strong>Username:</strong> {{ player_info.username }}</p>
+        <p><strong>Blitz Rating:</strong> {{ player_info.perfs.blitz.rating }}</p>
+        <p><strong>Puzzle Rating:</strong> {{ player_info.perfs.puzzle.rating }}</p>
+        <p><strong>Bullet Rating:</strong> {{ player_info.perfs.bullet.rating }}</p>
+        <p><strong>Correspondence Rating:</strong> {{ player_info.perfs.correspondence.rating }}</p>
+        <p><strong>Classical Rating:</strong> {{ player_info.perfs.classical.rating }}</p>
+        <p><strong>Rapid Rating:</strong> {{ player_info.perfs.rapid.rating }}</p>
+        <p><strong>Total Games Played:</strong> {{ player_info.count.all }}</p>
+        <p><strong>Total Wins:</strong> {{ player_info.count.win }}</p>
+        <p><strong>Total Losses:</strong> {{ player_info.count.loss }}</p>
+        <p><strong>Total Draws:</strong> {{ player_info.count.draw }}</p>
+        <p><strong>View Profile on Lichess:</strong> <a href="{{ player_info.url }}">Click Here</a></p>
+    {% else %}
+        <p>Failed to retrieve player information.</p>
+    {% endif %}
+</body>
+</html>
