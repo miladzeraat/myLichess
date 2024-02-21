@@ -9,12 +9,17 @@
     <h1>Player Information</h1>
     {% if player_info %}
         <p><strong>Username:</strong> {{ player_info.username }}</p>
-        <p><strong>Blitz Rating:</strong> {{ player_info.perfs.blitz.rating }}</p>
-        <p><strong>Puzzle Rating:</strong> {{ player_info.perfs.puzzle.rating }}</p>
-        <p><strong>Bullet Rating:</strong> {{ player_info.perfs.bullet.rating }}</p>
-        <p><strong>Correspondence Rating:</strong> {{ player_info.perfs.correspondence.rating }}</p>
-        <p><strong>Classical Rating:</strong> {{ player_info.perfs.classical.rating }}</p>
-        <p><strong>Rapid Rating:</strong> {{ player_info.perfs.rapid.rating }}</p>
+        <!-- Display other player information as before -->
+        
+        <h2>Win Percentages</h2>
+        <p><strong>Win Percentage with White:</strong> {{ "%.2f"|format(win_percentage_white) }}%</p>
+        <p><strong>Draw Percentage with White:</strong> {{ "%.2f"|format(draw_percentage_white) }}%</p>
+        <p><strong>Loss Percentage with White:</strong> {{ "%.2f"|format(100 - draw_percentage_white-win_percentage_white) }}%</p>
+        
+        <p><strong>Win Percentage with Black:</strong> {{ "%.2f"|format(win_percentage_black) }}%</p>
+        <p><strong>Draw Percentage with Black:</strong> {{ "%.2f"|format(draw_percentage_black) }}%</p>
+        <p><strong>Loss Percentage with Black:</strong> {{ "%.2f"|format(100 - draw_percentage_black-win_percentage_black) }}%</p>
+
         <p><strong>Total Games Played:</strong> {{ player_info.count.all }}</p>
         <p><strong>Total Wins:</strong> {{ player_info.count.win }}</p>
         <p><strong>Total Losses:</strong> {{ player_info.count.loss }}</p>
