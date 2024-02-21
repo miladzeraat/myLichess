@@ -23,8 +23,12 @@
         <p><strong>Total Games Played:</strong> {{ player_info.count.all }}</p>
         <p><strong>Total Wins:</strong> {{ player_info.count.win }}</p>
         <p><strong>Total Losses:</strong> {{ player_info.count.loss }}</p>
-        <p><strong>Total Draws:</strong> {{ player_info.count.draw }}</p>
+        <p><strong>Total Draws:</strong>  {{ player_info.count.draw }}</p>
         <p><strong>View Profile on Lichess:</strong> <a href="{{ player_info.url }}">Click Here</a></p>
+        
+        <!-- Display the plot -->
+        <h2>Win/Draw/Loss Pie Chart</h2>
+        <img src="/static/images/{{ plot_filename }}" alt="Win/Draw/Loss Pie Chart">
     {% else %}
         <p>Failed to retrieve player information.</p>
     {% endif %}
