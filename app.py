@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
-from utils.data import get_player_info, get_win_percentages, calculate_outcomes
-from utils.plotting import generate_pie_chart, generate_bar_chart, generate_first_move_bar_chart
+from utils.data import get_player_info, get_win_percentages, calculate_outcomes, calculate_rating
+from utils.plotting import generate_pie_chart, generate_bar_chart, generate_first_move_bar_chart,plot_ratings_over_time
 import os
 import requests
 import berserk
@@ -36,7 +36,7 @@ def player_info(username):
         games = load_games_from_cache(username)
     else:
         games = list(client.games.export_by_player(username))
-        if username.lower() in ['miladonya','miladagha','drnykterstein']:
+        if username.lower() in ['miladonya','miladagha','drnykterstein','alireza2003','lance5500']:
             save_games_to_cache(username, games)
 
     if player_info:
@@ -54,10 +54,12 @@ def player_info(username):
         #First move bar chart
         outcome_white=calculate_outcomes(username, games, True)
         outcome_black=calculate_outcomes(username, games, False)
-        
         bar_chart_first_move_white = generate_first_move_bar_chart(outcome_white,color='white')
         bar_chart_first_move_black = generate_first_move_bar_chart(outcome_black,color='black')
-        print(bar_chart_first_move_white)
+        #Rating per time
+        rating_bullet,rating_blitz,rating_rapid=calculate_rating(username,games)
+        rating_plot=plot_ratings_over_time(rating_bullet, rating_blitz, rating_rapid)
+        
         return render_template(
             'player.html',
             player_info=player_info,
@@ -70,7 +72,7 @@ def player_info(username):
             plot_filename=plot_filename,
             bar_plot_filename=bar_plot_filename,
             bar_chart_first_move_white=bar_chart_first_move_white,
-            bar_chart_first_move_black=bar_chart_first_move_black)
+            bar_chart_first_move_black=bar_chart_first_move_black,rating_plot=rating_plot)
     else:
         return render_template('index.html', error="Failed to retrieve player information.")
 

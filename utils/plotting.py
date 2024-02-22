@@ -2,6 +2,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use('Agg')
 import numpy as np
+import datetime
+
 def generate_pie_chart(username, win_percentage_white, draw_percentage_white, loss_percentage_white,
                         win_percentage_black, draw_percentage_black, loss_percentage_black):
     labels = ['Win', 'Draw', 'Loss']
@@ -76,4 +78,42 @@ def generate_first_move_bar_chart(outcome,color):
     plot_filename = f'static/images/first_move_{color}_bar_chart.png'
     plt.savefig(plot_filename)
     
+    return plot_filename
+
+
+import matplotlib.dates as mdates
+
+def plot_ratings_over_time(ratings_data_bullet, ratings_data_blitz, ratings_data_rapid):
+    fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(10, 15))
+
+    categories = ['Bullet', 'Blitz', 'Rapid']
+    all_data = [ratings_data_bullet, ratings_data_blitz, ratings_data_rapid]
+
+    for i, (ratings_data, category) in enumerate(zip(all_data, categories)):
+        if ratings_data and len(ratings_data) >= 10:
+            # Extract timestamps and ratings from the ratings data
+            timestamps, ratings = zip(*ratings_data)
+            
+            # Convert timestamps to datetime objects if not already
+            if isinstance(timestamps[0], int):
+                timestamps = [datetime.datetime.utcfromtimestamp(ts) for ts in timestamps]
+
+            # Plot ratings over time
+            axes[i].plot(timestamps, ratings, linestyle='-')
+            axes[i].set_title(f"Player's Ratings Over Time ({category})")
+            axes[i].set_xlabel("Year")
+            axes[i].set_ylabel("Rating")
+            axes[i].grid(True)
+
+            # Format x-axis as years
+            axes[i].xaxis.set_major_locator(mdates.YearLocator())
+            axes[i].xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+
+    # Adjust layout
+    plt.tight_layout()
+    
+    # Save the plot to a file
+    plot_filename = 'static/images/ratings_over_time_combined.png'
+    plt.savefig(plot_filename)
+
     return plot_filename

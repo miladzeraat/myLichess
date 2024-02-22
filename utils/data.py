@@ -1,6 +1,6 @@
 import requests
 import berserk
-
+import datetime
 API_TOKEN = 'lip_yBjKhwsBvqUCJEu2Khcr'
 
 def get_player_info(username):
@@ -108,3 +108,23 @@ def get_win_percentages(username,games):
         draw_percentage_black, 
         loss_percentage_black
     )
+def calculate_rating(username,games):
+    ratings_bullet = []
+    ratings_blitz = []
+    ratings_rapid = []
+
+    # Iterate through each game
+    for game in games:
+        # Extract relevant information from the game data
+        speed = game.get('speed')
+        timestamp = game.get('createdAt')
+        player_rating = game.get('players', {}).get('white', {}).get('rating')  # Assuming we always play as white
+        
+        # Filter games based on time control and save ratings
+        if speed == 'bullet':
+            ratings_bullet.append((timestamp, player_rating))
+        elif speed == 'blitz':
+            ratings_blitz.append((timestamp, player_rating))
+        elif speed == 'rapid':
+            ratings_rapid.append((timestamp, player_rating))
+    return ratings_bullet,ratings_blitz,ratings_bullet
