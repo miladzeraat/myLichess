@@ -4,15 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chess Stats</title>
+    <link rel="stylesheet" href="static/styles.css">
 </head>
 <body>
-    <h1>Welcome to Chess Stats!</h1>
-    <p>This is a simple webpage for displaying chess statistics.</p>
+    <div class="container">
+        <header>
+            <h1>Welcome to Chess Stats!</h1>
+            <p>Chess is a fascinating game that requires strategy, foresight, and tactical thinking. Whether you're a casual player or a serious competitor, analyzing your games can provide valuable insights into your strengths and weaknesses.</p>
+            <p>This simple webpage allows you to analyze your Lichess games and gain valuable statistics.</p>
+        </header>
+        <form id="playerForm" method="POST">
+            <label for="username">Enter your Lichess username:</label>
+            <input type="text" id="username" name="username" placeholder="e.g., DrNykterstein">
+            <input type="submit" value="Analyze My Games">
+        </form>
+        <div class="links">
+            <p>Explore games from legendary player <a href="/player/DrNykterstein">Magnus Carlsen</a>.</p>
+            <p>Want to see how you match up? <a href="/player/miladagha">Analyze my games</a>.</p>
+        </div>
+        
+    </div>
 
-    <form action="/player" method="POST">
-        <label for="username">Enter your Lichess username:</label><br>
-        <input type="text" id="username" name="username"><br>
-        <input type="submit" value="Submit">
-    </form>
+    <script>
+        document.getElementById("playerForm").addEventListener("submit", function(event) {
+            var usernameInput = document.getElementById("username").value;
+            if (usernameInput.trim() !== "") {
+                this.action = "/player/" + usernameInput;
+            } else {
+                // Optionally handle empty username case
+                event.preventDefault();
+                alert("Please enter a username.");
+            }
+        });
+    </script>
 </body>
 </html>

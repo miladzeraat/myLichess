@@ -24,13 +24,14 @@ def calculate_outcomes(username, games, Boolean):
         
 
         moves = game['moves'].split()
-        if len(moves)>2:
+        if len(moves)>2 and game['rated']:
             temp=moves[0]+moves[1]
             
             # Get the winner and check if the game involves the specified username
             winner = game.get('winner')
             is_white = game['players']['white']['user']['name'].lower() == username.lower()
             is_black = game['players']['black']['user']['name'].lower() == username.lower()
+            
             if is_white and Boolean:
                 if temp not in outcomes:
                     outcomes[temp] = {'win': 0, 'loss': 0, 'draw': 0}

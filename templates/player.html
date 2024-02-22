@@ -28,17 +28,17 @@
         
         <!-- Display the pie chart -->
         <h2>Win/Draw/Loss Pie Chart</h2>
-        <img src="{{ plot_filename }}" alt="Win/Draw/Loss Pie Chart">
+        <img src="/{{ plot_filename }}" alt="Win/Draw/Loss Pie Chart">
 
         <!-- Display the white game results bar chart -->
         <h2>White Game Results Bar Chart</h2>
-        <img src="{{ bar_plot_filename }}" alt="White Game Results Bar Chart">
+        <img src="/{{ bar_plot_filename }}" alt="White Game Results Bar Chart">
         <!-- Display the First move results bar chart -->
         <h2>First move, White Bar Chart</h2>
-        <img src="{{ bar_chart_first_move_white }}" alt="First move, White Bar Chart">
+        <img src="/{{ bar_chart_first_move_white }}" alt="First move, White Bar Chart">
         <!-- Display the First move results bar chart -->
         <h2>First move, Black Bar Chart</h2>
-        <img src="{{ bar_chart_first_move_black }}" alt="First move, Black Bar Chart">
+        <img src="/{{ bar_chart_first_move_black }}" alt="First move, Black Bar Chart">
 
     {% else %}
         <p>Failed to retrieve player information.</p>

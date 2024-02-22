@@ -77,4 +77,3 @@ def generate_first_move_bar_chart(outcome,color):
     plt.savefig(plot_filename)
     
     return plot_filename
-
