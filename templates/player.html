@@ -49,6 +49,16 @@
         <!-- Rating over time -->
         <h2>Rating over time</h2>
         <img src="/{{ rating_plot }}" alt="Rating over time">
+        <!-- Rating over time -->
+        <h2>Higher rated opponent</h2>
+        <img src="/{{ higher_rating_plot_filename }}" alt="Higher rated opponent">
+        <!-- Rating over time -->
+        <h2>Lower rated opponent</h2>
+        <img src="/{{ lower_rating_plot_filename }}" alt="Lower rated opponent">
+        <h2>Higher rated opponent</h2>
+        <img src="/{{ higher_rating_score }}" alt="higher_rating_score">
+        <h2>Lower rated opponent</h2>
+        <img src="/{{ lower_rating_score }}" alt="Lower rated opponent">
 
     {% else %}
         <p>Failed to retrieve player information.</p>

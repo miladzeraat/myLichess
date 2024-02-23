@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
-from utils.data import get_player_info, get_win_percentages, calculate_outcomes, calculate_rating
-from utils.plotting import generate_pie_chart, generate_bar_chart, generate_first_move_bar_chart,plot_ratings_over_time
+from utils.data import get_player_info, extract_rating_diffs, get_win_percentages, calculate_outcomes, calculate_rating
+from utils.plotting import generate_pie_chart,plot_rating_diffs, generate_bar_chart, generate_first_move_bar_chart,plot_ratings_over_time
 import os
 import requests
 import berserk
@@ -46,7 +46,7 @@ def player_info(username):
 
         # Generate pie charts
         plot_filename = generate_pie_chart(username, win_percentage_white, draw_percentage_white, loss_percentage_white,
-                                            win_percentage_black, draw_percentage_black, loss_percentage_black)
+                                            win_percentage_black, draw_percentage_black, loss_percentage_black,flavor='')
 
         # Generate bar charts
         bar_plot_filename = generate_bar_chart(username, win_percentage_white, draw_percentage_white, loss_percentage_white,
@@ -59,7 +59,35 @@ def player_info(username):
         #Rating per time
         rating_bullet,rating_blitz,rating_rapid=calculate_rating(username,games)
         rating_plot=plot_ratings_over_time(rating_bullet, rating_blitz, rating_rapid)
-        
+        #higher/lowe rated players
+        lower_rated_opponent_games = []
+        higher_rated_opponent_games = []
+        rated_games= [game for game in games if game['rated']]
+        for game in rated_games:
+            
+            if (game['players']['white']['user']['name'].lower() == username.lower() and game['players']['white']['rating'] < game['players']['black']['rating']) or (game['players']['black']['user']['name'].lower() == username.lower() and game['players']['black']['rating'] < game['players']['white']['rating']):
+                higher_rated_opponent_games.append(game)
+            else:
+                lower_rated_opponent_games.append(game)
+            
+        (higher_win_percentage_white, higher_draw_percentage_white, higher_loss_percentage_white,
+        higher_win_percentage_black, higher_draw_percentage_black, higher_loss_percentage_black) = get_win_percentages(username, higher_rated_opponent_games)
+
+        (lower_win_percentage_white, lower_draw_percentage_white, lower_loss_percentage_white,
+        lower_win_percentage_black, lower_draw_percentage_black, lower_loss_percentage_black) = get_win_percentages(username, lower_rated_opponent_games)
+        # Generate pie chart for games against higher-rated opponents
+        higher_rating_plot_filename = generate_pie_chart(username, higher_win_percentage_white, higher_draw_percentage_white, higher_loss_percentage_white,
+                                                  higher_win_percentage_black, higher_draw_percentage_black, higher_loss_percentage_black, flavor='_higher rated opponent')
+
+        # Generate pie chart for games against lower-rated opponents
+        lower_rating_plot_filename = generate_pie_chart(username, lower_win_percentage_white, lower_draw_percentage_white, lower_loss_percentage_white,
+                                                 lower_win_percentage_black, lower_draw_percentage_black, lower_loss_percentage_black,flavor='_lower rated opponents')
+        #Rating difference
+        # Extract rating differences for games against higher-rated opponents
+        higher_white_rating_diffs, higher_black_rating_diffs, higher_overall_rating_diffs = extract_rating_diffs(username, higher_rated_opponent_games)
+        lower_white_rating_diffs, lower_black_rating_diffs, lower_overall_rating_diffs = extract_rating_diffs(username, lower_rated_opponent_games)
+        higher_rating_score = plot_rating_diffs(higher_white_rating_diffs, higher_black_rating_diffs, higher_overall_rating_diffs)
+        lower_rating_score=plot_rating_diffs(lower_white_rating_diffs, lower_black_rating_diffs, lower_overall_rating_diffs)
         return render_template(
             'player.html',
             player_info=player_info,
@@ -72,7 +100,7 @@ def player_info(username):
             plot_filename=plot_filename,
             bar_plot_filename=bar_plot_filename,
             bar_chart_first_move_white=bar_chart_first_move_white,
-            bar_chart_first_move_black=bar_chart_first_move_black,rating_plot=rating_plot)
+            bar_chart_first_move_black=bar_chart_first_move_black,rating_plot=rating_plot,higher_rating_plot_filename=higher_rating_plot_filename,lower_rating_plot_filename=lower_rating_plot_filename,higher_rating_score=higher_rating_score,lower_rating_score=lower_rating_score)
     else:
         return render_template('index.html', error="Failed to retrieve player information.")
 

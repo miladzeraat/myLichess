@@ -5,7 +5,7 @@ import numpy as np
 import datetime
 
 def generate_pie_chart(username, win_percentage_white, draw_percentage_white, loss_percentage_white,
-                        win_percentage_black, draw_percentage_black, loss_percentage_black):
+                        win_percentage_black, draw_percentage_black, loss_percentage_black,flavor=''):
     labels = ['Win', 'Draw', 'Loss']
     white_data = [win_percentage_white, draw_percentage_white, loss_percentage_white]
     black_data = [win_percentage_black, draw_percentage_black, loss_percentage_black]
@@ -17,7 +17,7 @@ def generate_pie_chart(username, win_percentage_white, draw_percentage_white, lo
     ax[1].set_title('Black')
 
     # Save the plot to a file
-    plot_filename = f'static/images/{username}_pie_charts.png'
+    plot_filename = f'static/images/{username}_pie_charts{flavor}.png'
     plt.savefig(plot_filename)
     
     return plot_filename
@@ -114,6 +114,30 @@ def plot_ratings_over_time(ratings_data_bullet, ratings_data_blitz, ratings_data
     
     # Save the plot to a file
     plot_filename = 'static/images/ratings_over_time_combined.png'
+    plt.savefig(plot_filename)
+
+    return plot_filename
+def plot_rating_diffs(white_diffs, black_diffs, total_diffs):
+    plt.figure(figsize=(10, 6))
+    
+    # Plot cumulative rating differences for white
+    plt.plot(range(len(white_diffs)), white_diffs, color='blue', label='White')
+    
+    # Plot cumulative rating differences for black
+    plt.plot(range(len(black_diffs)), black_diffs, color='red', label='Black')
+    
+    # Plot cumulative rating differences for total (white + black)
+    plt.plot(range(len(total_diffs)), total_diffs, color='green', label='Total')
+    
+    plt.title("Cumulative Rating Differences Over Games")
+    plt.xlabel("Games")
+    plt.ylabel("Cumulative Rating Difference")
+    plt.legend()
+    plt.grid(True)
+    
+
+    # Save the plot to a file
+    plot_filename = 'static/images/rating_diffs_over_games.png'
     plt.savefig(plot_filename)
 
     return plot_filename

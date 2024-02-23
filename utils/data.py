@@ -71,7 +71,7 @@ def get_win_percentages(username,games):
     wins_black = 0
     draw_with_black = 0
     games_with_black = 0
-    
+    games = [game for game in games if game['rated'] and game['variant']=='standard' and len(game['moves'].split())>2]
     for game in games:
         winner = game.get('winner')
         draw_status = game.get('status')
@@ -83,6 +83,7 @@ def get_win_percentages(username,games):
                 draw_with_black += 1
                 games_with_black += 1
         else:
+            
             if game['players']['white']['user']['name'].lower() == username.lower():
                 if winner == 'white':
                     wins_white += 1
@@ -128,3 +129,25 @@ def calculate_rating(username,games):
         elif speed == 'rapid':
             ratings_rapid.append((timestamp, player_rating))
     return ratings_bullet,ratings_blitz,ratings_bullet
+def extract_rating_diffs(username, games):
+    white_rating_diffs = []
+    black_rating_diffs = []
+    overall_rating_diffs = []
+    games = [game for game in games if game['rated'] and game['variant']=='standard' and game['speed']=='blitz' and len(game['moves'].split())>2]
+    for game in games:
+       
+        # Check if the user played as white or black
+        if game['players']['white']['user']['name'].lower() == username.lower():
+                
+                white_rating_diffs.append(game['players']['white']['ratingDiff'])
+                overall_rating_diffs.append(game['players']['white']['ratingDiff'])
+            
+            
+        elif game['players']['black']['user']['name'].lower() == username.lower(): 
+            try:
+                black_rating_diffs.append(game['players']['black']['ratingDiff'])
+                overall_rating_diffs.append(game['players']['black']['ratingDiff'])
+            except KeyError:
+                pass
+            
+    return white_rating_diffs, black_rating_diffs, overall_rating_diffs
