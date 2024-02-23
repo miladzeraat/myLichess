@@ -5,9 +5,25 @@ import os
 import requests
 import berserk
 import pickle
+from openai import OpenAI
+client = OpenAI(api_key='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')
+
 API_TOKEN = 'lip_yBjKhwsBvqUCJEu2Khcr'
 CACHE_FOLDER = "game_cache"
 app = Flask(__name__)
+def chat_with_gpt(outcome_white, outcome_black):
+    # Construct the message for ChatGPT
+    messages = [
+        {"role": "system", "content": "I'm providing you with chess dataset for games played with white and black pieces. Please analyze the data and provide insights and recommendations based on the outcomes."},
+        {"role": "user", "content": f"For games played with white pieces: {outcome_white}. For games played with black pieces: {outcome_black}."}
+    ]
+
+    # Send the messages to ChatGPT
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=messages
+    )
+    return completion.choices[0].message.content
 def check_cached_data(username):
     cache_filename = os.path.join(CACHE_FOLDER, f"{username}_games.pkl")
     return os.path.exists(cache_filename)
@@ -88,6 +104,9 @@ def player_info(username):
         lower_white_rating_diffs, lower_black_rating_diffs, lower_overall_rating_diffs = extract_rating_diffs(username, lower_rated_opponent_games)
         higher_rating_score = plot_rating_diffs(higher_white_rating_diffs, higher_black_rating_diffs, higher_overall_rating_diffs)
         lower_rating_score=plot_rating_diffs(lower_white_rating_diffs, lower_black_rating_diffs, lower_overall_rating_diffs)
+        #chat with chatgpt
+        chat_data = f"Player {username}'s statistics: Wins - {win_percentage_white}, Draws - {draw_percentage_white}, Losses - {loss_percentage_white}, etc."
+        advice = chat_with_gpt(outcome_white, outcome_black)
         return render_template(
             'player.html',
             player_info=player_info,
@@ -100,7 +119,7 @@ def player_info(username):
             plot_filename=plot_filename,
             bar_plot_filename=bar_plot_filename,
             bar_chart_first_move_white=bar_chart_first_move_white,
-            bar_chart_first_move_black=bar_chart_first_move_black,rating_plot=rating_plot,higher_rating_plot_filename=higher_rating_plot_filename,lower_rating_plot_filename=lower_rating_plot_filename,higher_rating_score=higher_rating_score,lower_rating_score=lower_rating_score)
+            bar_chart_first_move_black=bar_chart_first_move_black,rating_plot=rating_plot,higher_rating_plot_filename=higher_rating_plot_filename,lower_rating_plot_filename=lower_rating_plot_filename,higher_rating_score=higher_rating_score,lower_rating_score=lower_rating_score,advice=advice)
     else:
         return render_template('index.html', error="Failed to retrieve player information.")
 
